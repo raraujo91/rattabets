@@ -49,7 +49,7 @@ export default function BetForm({ fixture, rules, user }) {
                 setMode("edit")
             }
         }
-    })
+    }, [bets, user.id])
 
     const { toast } = useToast()
     const router = useRouter()

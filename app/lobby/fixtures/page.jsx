@@ -5,10 +5,11 @@ import { createClient } from "@/utils/supabase/server"
 
 export const revalidate = 0
 
-const supabase = createClient()
 
 async function fetchData() {
-
+    
+    const supabase = createClient()
+    
     const { data: championships , error } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*))`)
 
     const { data: { user } } = await supabase.auth.getUser()
