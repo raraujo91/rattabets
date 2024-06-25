@@ -59,13 +59,13 @@ export default async function FixturePage({ searchParams }) {
                 <TabsList className="w-full justify-strech">
                     {championships.map(championship => {
                         return (
-                            <TabsTrigger value={championship.slug}>{championship.name}</TabsTrigger>
+                            <TabsTrigger key={championship.id} value={championship.slug}>{championship.name}</TabsTrigger>
                         )
                     })}
                 </TabsList>
                 {championships.map(championship => {
                     return (
-                        <TabsContent value={championship.slug}>
+                        <TabsContent key={championship.id} value={championship.slug}>
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Ranking</CardTitle>
@@ -85,7 +85,7 @@ export default async function FixturePage({ searchParams }) {
                                 championship.fixtures.map(fixture => {
                                     if (fixture.championshipId.includes(championship.slug)) {
                                         return (
-                                            <MatchCard fixture={fixture} user={user} />
+                                            <MatchCard key={fixture.id} fixture={fixture} user={user} />
                                         )
                                     }
                                 })
