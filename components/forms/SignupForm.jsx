@@ -71,7 +71,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input placeholder="Nickname" {...field}></Input>
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage variant="primary" />
                             </FormItem>
                         )} />
                     <FormField
@@ -82,7 +82,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input placeholder="E-mail" type="email" {...field}></Input>
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage variant="primary" />
                             </FormItem>
                         )} />
                     <FormField
@@ -93,7 +93,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input placeholder="Senha" type="password" {...field}></Input>
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage variant="primary" />
                             </FormItem>
                         )} />
                     <FormField
@@ -104,7 +104,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input placeholder="Confirmar senha" type="password" {...field}></Input>
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage variant="primary" />
                             </FormItem>
                         )} />
                     <div className="flex space-x-4 justify-end pt-4">
