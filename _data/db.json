@@ -1,0 +1,306 @@
+{
+  "championships": [
+    {
+      "id": "46124899-4f9e-42ab-8222-9e9cacd400b0",
+      "slug": "euro-2024",
+      "name": "Euro 2024"
+    },
+    {
+      "id": "ff7b4c34-b9b2-47e9-b49a-c2c745654cb9",
+      "slug": "copa-america-2024",
+      "name": "Copa America 2024"
+    }
+  ],
+  "teams": [
+    {
+      "championships": [
+        "euro-2024"
+      ],
+      "id": "1",
+      "initials": "ALE",
+      "flag": "DE",
+      "name": "Alemanha"
+    },
+    {
+      "championships": [
+        "euro-2024"
+      ],
+      "id": "2",
+      "initials": "ESC",
+      "flag": "GB-SCT",
+      "name": "Escócia"
+    },
+    {
+      "championships": [
+        "copa-america-2024"
+      ],
+      "id": "25",
+      "initials": "ARG",
+      "flag": "AR",
+      "name": "Argentina"
+    },
+    {
+      "championships": [
+        "copa-america-2024"
+      ],
+      "id": "26",
+      "initials": "CAN",
+      "flag": "CA",
+      "name": "Canadá"
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "5b3b0c60-70ee-4a1f-8770-a45ce08a8e00",
+      "gameId": "1",
+      "championshipId": "euro-2024",
+      "startsAt": "2024-06-13T19:00:00+0000",
+      "endedIn": "FT",
+      "finalResult": "home",
+      "isFinished": true,
+      "isSynced": false,
+      "isPlayoff": false,
+      "yellowCards": 3,
+      "redCards": 1,
+      "cornerKicks": 5,
+      "freeKickGoals": 0,
+      "headerGoals": 1,
+      "penaltyGoals": 1,
+      "longRangeGoals": 2,
+      "homeTeam": "1",
+      "awayTeam": "2",
+      "score": [
+        5,
+        1
+      ]
+    },
+    {
+      "id": "4fe4d0cd-e9b2-47c3-b25b-1b0fbb5aca90",
+      "gameId": "1",
+      "championshipId": "copa-america-2024",
+      "startsAt": "2024-06-20T00:00:00+0000",
+      "isFinished": true,
+      "isPlayoff": false,
+      "isSynced": true,
+      "endedIn": "FT",
+      "yellowCards": 4,
+      "redCards": 1,
+      "cornerKicks": 11,
+      "freeKickGoals": 0,
+      "penaltyKickGoals": 0,
+      "longRangeGoals": 0,
+      "homeTeam": "25",
+      "awayTeam": "26",
+      "score": [
+        2,
+        0
+      ],
+      "finalResult": "home"
+    }
+  ],
+  "bets": [
+    {
+      "id": "43c09bc8-7e27-471b-a5b1-dcd7f80f7e09",
+      "fixtureId": "5b3b0c60-70ee-4a1f-8770-a45ce08a8e00",
+      "userId": "2fdae126-9bb2-44aa-aef5-3912837658cd",
+      "championshipId": "euro-2024",
+      "homeScore": 3,
+      "awayScore": 1,
+      "yellowCards": "under",
+      "redCards": "under",
+      "cornerKicks": "over",
+      "headerGoals": "under",
+      "freeKickGoals": "under",
+      "longRangeGoals": "under",
+      "penaltyGoals": "under"
+    },
+    {
+      "fixtureId": "5b3b0c60-70ee-4a1f-8770-a45ce08a8e00",
+      "userId": "cc284134-3525-4221-9f6f-3e815f18bd0f",
+      "championshipId": "euro-2024",
+      "homeScore": 1,
+      "awayScore": 1,
+      "id": "a5c89577-ec50-4ade-9aaf-a593887e5910",
+      "yellowCards": "under",
+      "redCards": "under",
+      "cornerKicks": "over",
+      "headerGoals": "under",
+      "freeKickGoals": "under",
+      "longRangeGoals": "under",
+      "penaltyGoals": "under"
+    },
+    {
+      "fixtureId": "5b3b0c60-70ee-4a1f-8770-a45ce08a8e00",
+      "userId": "f9e4e231-8116-4bd4-b300-79a51b39e68a",
+      "championshipId": "euro-2024",
+      "homeScore": 3,
+      "awayScore": 0,
+      "id": "42edbebd-dec5-4ebd-97dc-62cc4c550657",
+      "yellowCards": "over",
+      "redCards": "under",
+      "cornerKicks": "over",
+      "headerGoals": "over",
+      "freeKickGoals": "under",
+      "longRangeGoals": "under",
+      "penaltyGoals": "under"
+    },
+    {
+      "fixtureId": "5b3b0c60-70ee-4a1f-8770-a45ce08a8e00",
+      "userId": "e4aa8b89-9aaf-471b-afec-aea3839f2d99",
+      "championshipId": "euro-2024",
+      "homeScore": 2,
+      "awayScore": 0,
+      "id": "414198eb-24a6-439d-895d-f3b8462d9be0",
+      "yellowCards": "under",
+      "redCards": "under",
+      "cornerKicks": "over",
+      "headerGoals": "over",
+      "freeKickGoals": "under",
+      "longRangeGoals": "under",
+      "penaltyGoals": "under"
+    },
+    {
+      "fixtureId": "5b3b0c60-70ee-4a1f-8770-a45ce08a8e00",
+      "userId": "8b769b22-4b87-4ff7-b6d8-75e0f2af1c47",
+      "championshipId": "euro-2024",
+      "homeScore": 2,
+      "awayScore": 1,
+      "id": "a8867ec0-3536-440a-bb8f-91f65113b36f",
+      "yellowCards": "under",
+      "redCards": "under",
+      "cornerKicks": "over",
+      "headerGoals": "under",
+      "freeKickGoals": "under",
+      "longRangeGoals": "under",
+      "penaltyGoals": "under"
+    }
+  ],
+  "rules": [
+    {
+      "id": "8ab074b7-3b0a-4ed9-a005-6ca70d253d1f",
+      "active": true,
+      "type": "score",
+      "keyword": "bullseye",
+      "description": "Placar exato",
+      "points": 20
+    },
+    {
+      "id": "4a6d3588-a474-4b74-b7f7-1a42e14523ef",
+      "active": true,
+      "type": "score",
+      "keyword": "threeGoalsDifference",
+      "description": "Três gols de diferença",
+      "points": 5
+    },
+    {
+      "id": "58349bab-0ca2-4e50-92b9-b9480ea751c1",
+      "active": true,
+      "type": "score",
+      "keyword": "winnerGoals",
+      "description": "Gols do vencedor",
+      "points": 6
+    },
+    {
+      "id": "0118c044-b53d-4de6-949d-dfe573488cfa",
+      "active": true,
+      "type": "score",
+      "keyword": "loserGoals",
+      "description": "Gols do perdedor",
+      "points": 4
+    },
+    {
+      "id": "56f0b645-4ee2-41dc-a374-a7d5ac0482b2",
+      "active": true,
+      "type": "score",
+      "keyword": "winner",
+      "description": "Vencedor",
+      "points": 4
+    },
+    {
+      "id": "b4da6120-5f51-44e5-bb89-4ae60e36e0ca",
+      "active": true,
+      "type": "score",
+      "keyword": "draw",
+      "description": "Empate",
+      "points": 4
+    },
+    {
+      "id": "deafd04c-1d11-42b6-8e6a-2850e0e756ee",
+      "active": true,
+      "type": "score",
+      "keyword": "penaltyKickWinner",
+      "description": "Vencedor nos pênaltis",
+      "points": 5
+    },
+    {
+      "id": "fde8297a-7eaf-4843-8cfd-b58bf6740e7a",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "yellowCards",
+      "description": "Cartões amarelos",
+      "defaultSpread": 4.5,
+      "pointsOver": 6,
+      "pointsUnder": 4
+    },
+    {
+      "id": "2ac9e3fd-a7a9-4bdb-a186-7f9e509fbbed",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "redCards",
+      "description": "Cartões vermelhos",
+      "defaultSpread": 0.5,
+      "pointsOver": 8,
+      "pointsUnder": 6
+    },
+    {
+      "id": "b5df1aa2-3d87-47ef-b561-9c8d0ebe7527",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "cornerKicks",
+      "description": "Escanteios",
+      "defaultSpread": 8.5,
+      "pointsOver": 6,
+      "pointsUnder": 6
+    },
+    {
+      "id": "d4ead584-d9ce-4b55-84c1-3e07fb3de20d",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "headerGoals",
+      "description": "Gols de cabeça",
+      "defaultSpread": 1.5,
+      "pointsOver": 6,
+      "pointsUnder": 6
+    },
+    {
+      "id": "dadb4b46-04ba-4a73-8a1e-363e1ce4fb25",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "freeKickGoals",
+      "description": "Gols de falta",
+      "defaultSpread": 0.5,
+      "pointsOver": 8,
+      "pointsUnder": 6
+    },
+    {
+      "id": "bafc7b18-39d1-4767-af5c-d7f3ec330b13",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "longRangeGoals",
+      "description": "Gols de fora da área",
+      "defaultSpread": 1.5,
+      "pointsOver": 4,
+      "pointsUnder": 4
+    },
+    {
+      "id": "78c87f36-8de6-4add-b040-d4ce4ea0bbf6",
+      "active": true,
+      "type": "overUnder",
+      "keyword": "penaltyGoals",
+      "description": "Gols de pênalti",
+      "defaultSpread": 1.5,
+      "pointsOver": 8,
+      "pointsUnder": 6
+    }
+  ]
+}
