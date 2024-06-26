@@ -2,6 +2,7 @@ import MatchCard from "@/components/cards/MatchCard"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { createClient } from "@/utils/supabase/server"
+import { redirect } from 'next/navigation'
 import moment from "moment"
 
 export const revalidate = 0
@@ -16,7 +17,11 @@ async function fetchData() {
         throw new Error(JSON.stringify(championshipsError, null, 2))
     }
 
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+        redirect('/auth')
+    }
 
     const { data: points, error: profilesError } = await supabase.from('bets').select(`championshipId, userId, profiles(*), points:points.sum()`)
 

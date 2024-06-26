@@ -9,6 +9,8 @@ import { Form, FormField, FormControl, FormItem, FormLabel } from '@/components/
 import { Input } from '@/components/ui/input'
 import { Card, CardTitle } from '@/components/ui/card'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 const formSchema = z.object({
     email: z.string().min(1, "Email precisa ser preenchido").email("Este não é um email válido"),
@@ -27,6 +29,8 @@ export default function LoginForm() {
         }
     })
 
+    const router = useRouter()
+
     function onSubmit(values) {
         fetch('/api/login', {
             method: "POST",
@@ -36,8 +40,11 @@ export default function LoginForm() {
             body: JSON.stringify(values)
 
         })
-        .then(response => response.json())
-        .then(json => setLoginState(json))
+        .then(response => {
+            if(response.ok) {
+                router.push('/lobby')
+            }            
+        })
     }
 
     return (

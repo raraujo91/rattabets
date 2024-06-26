@@ -23,7 +23,9 @@ export default function Layout({ children  }) {
               <GiRat /><p><b>rattabets.</b></p>
             </Link>
           </div>
-          <Button variant="ghost">Sair</Button>
+          <form action="/api/logout" method="POST">
+            <Button type="submit" variant="ghost">Sair</Button>
+          </form>
         </nav>
         <main>{children}</main>
       </div>

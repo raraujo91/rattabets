@@ -7,19 +7,21 @@ export async function POST(request) {
 
   const { email, password } = await request.json()
 
-  const data = {
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
-  }
+  })
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  console.log(data, error);
 
   if (error) {
-    redirect('/error')
+    return NextResponse.json({ login: false }, {
+      status: 401,
+      error
+    })
   }
-
   revalidatePath('/', 'layout')
-  return NextResponse.redirect(new URL('/lobby', request.url), {
-    status: 302,
+  return NextResponse.json({ login: true }, {
+    status: 200
   })
 }
