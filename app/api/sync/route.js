@@ -1,28 +1,30 @@
 import { NextResponse } from "next/server"
-import { rule } from "postcss"
+import { createClient } from "@/utils/supabase/server"
+
+export const revalidate = 0
 
 export async function GET(request) {
-    // const json = await request.json()
 
-    const fixturesResponse = await fetch('http://localhost:7000/fixtures?isSynced=false', {
-        cache: 'no-store'
-    })
+    const { searchParams } = new URL(request.url)
+    const gameId = searchParams.get('gameId')
 
-    const listOfFixtures = await fixturesResponse.json()
+    const supabase = createClient()
 
-    const fixtureIds = listOfFixtures.map(fixture => fixture.id)
+    const { data: fixtures, error: fixturesError, status } = await supabase.from('fixtures').select('*, bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId))
 
-    const betsResponse = await fetch(`http://localhost:7000/bets?fixtureId=${fixtureIds.toString()}`, {
-        cache: "no-store"
-    })
+    if (fixturesError) {
+        return NextResponse.json({ failedAt: "fixtures", error: fixturesError }, { status })
+    }
 
-    const listOfBets = await betsResponse.json()
+    if(fixtures.length == 0) {
+        return NextResponse.json({ failedAt: "emptyFixtures", data: fixtures }, { status })
+    }
 
-    // console.log(listOfBets)
+    const { data: rules, error: rulesError } = await supabase.from('rules').select()
 
-    const rulesResponse = await fetch('http://localhost:7000/rules')
-
-    const listOfRules = await rulesResponse.json()
+    if (rulesError) {
+        return NextResponse.json({ failedAt: "rules", error: rulesError }, { status })
+    }
 
     let finalResult = (home, away) => {
         let scoreResult = home - away
@@ -40,106 +42,110 @@ export async function GET(request) {
         }
     }
 
-    let syncedFixtures = listOfFixtures.map(fixture => {
+    let syncedFixtures = fixtures.map(fixture => {
 
         let gameResult = finalResult(fixture.score[0], fixture.score[1])
 
-        let betResults = listOfBets.map(bet => {
+        let betResults = fixture.bets.map(bet => {
             let betResult = finalResult(bet.homeScore, bet.awayScore)
             let betCalcs = {
                 id: bet.id,
-                totalPoints: 0,
+                points: 0,
                 correctChoices: []
             }
 
             // PLACAR EXATO
             if (betResult.score[0] == gameResult.score[0] && betResult.score[1] == gameResult.score[1]) {
-                let bullseye = listOfRules.find(rule => rule.keyword == "bullseye")
-                betCalcs.totalPoints += bullseye.points
+                let bullseye = rules.find(rule => rule.keyword == "bullseye")
+                betCalcs.points += bullseye.points
                 betCalcs.correctChoices.push("bullseye")
                 if (betResult.difference > 3) {
-                    betCalcs.totalPoints += 5
+                    betCalcs.points += 5
                     betCalcs.correctChoices.push("threeGoalsDifference")
                 }
             }
 
             if (!betCalcs.correctChoices.includes("bullseye")) {
-                listOfRules.forEach(rule => {
+                rules.forEach(rule => {
                     if (rule.type == "score") {
                         switch (rule.keyword) {
                             // EMPATE
                             case "draw":
                                 if (gameResult.result == "draw" && gameResult.result == betResult.result) {
-                                    betCalcs.totalPoints += 4
+                                    betCalcs.points += 4
                                     betCalcs.correctChoices.push("draw")
                                 };
                                 break;
                             // VENCEDOR
                             case "winner":
                                 if (gameResult.result != "draw" && gameResult.result == betResult.result) {
-                                    betCalcs.totalPoints += 4
+                                    betCalcs.points += 4
                                     betCalcs.correctChoices.push("winner")
 
                                     // GOLS DO VENCEDOR 
                                     if (gameResult.result == "home" && gameResult.score[0] == betResult.score[0]) {
-                                        betCalcs.totalPoints += 6
+                                        betCalcs.points += 6
                                         betCalcs.correctChoices.push("winnerGoals")
                                     }
 
                                     if (gameResult.result == "away" && gameResult.score[1] == betResult.score[1]) {
-                                        betCalcs.totalPoints += 6
+                                        betCalcs.points += 6
                                         betCalcs.correctChoices.push("winnerGoals")
                                     }
 
                                     // GOLS DO PERDEDOR 
                                     if (gameResult.result == "home" && gameResult.score[1] == betResult.score[1]) {
-                                        betCalcs.totalPoints += 4
+                                        betCalcs.points += 4
                                         betCalcs.correctChoices.push("loserGoals")
                                     }
 
                                     if (gameResult.result == "away" && gameResult.score[0] == betResult.score[0]) {
-                                        betCalcs.totalPoints += 4
+                                        betCalcs.points += 4
                                         betCalcs.correctChoices.push("loserGoals")
                                     }
                                 };
                                 break;
                         }
                     }
-                    
-                    if (rule.type == "overUnder") {
-                        let checkOverUnder = fixture[rule.keyword] > rule.defaultSpread ? "over" : "under"
-                        switch (checkOverUnder) {
-                            case "over":
-                                if (checkOverUnder == bet[rule.keyword]) {
-                                    betCalcs.totalPoints += rule.pointsOver
-                                    betCalcs.correctChoices.push(rule.keyword)
-                                } else {
-                                    betCalcs.totalPoints -= rule.pointsUnder/2
-                                }
-                                break;
-                            case "under":
-                                if (checkOverUnder == bet[rule.keyword]) {
-                                    betCalcs.totalPoints += rule.pointsUnder
-                                    betCalcs.correctChoices.push(rule.keyword)
-                                } else {
-                                    betCalcs.totalPoints -= rule.pointsOver/2
-                                }
-                                break;
-                        } 
-                    }
+
                 })
             }
+
+            rules.map(rule => {
+                if (rule.type == "overUnder") {
+                    let checkOverUnder = fixture[rule.keyword] > rule.defaultSpread ? "over" : "under"
+                    switch (checkOverUnder) {
+                        case "over":
+                            if (checkOverUnder == bet[rule.keyword]) {
+                                betCalcs.points += rule.pointsOver
+                                betCalcs.correctChoices.push(rule.keyword)
+                            } else {
+                                betCalcs.points -= rule.pointsUnder / 2
+                            }
+                            break;
+                        case "under":
+                            if (checkOverUnder == bet[rule.keyword]) {
+                                betCalcs.points += rule.pointsUnder
+                                betCalcs.correctChoices.push(rule.keyword)
+                            } else {
+                                betCalcs.points -= rule.pointsOver / 2
+                            }
+                            break;
+                    }
+                }
+            })
 
             // TODO: Implementar logica de PENALTIS
             return betCalcs;
 
         })
 
+
         // betResults.forEach(bet => {
         //     fetch(`http://localhost:7000/bets/${bet.id}`, {
         //         method: 'PUT',
         //         body: JSON.stringify({
-        //             totalPoints: bet.totalPoints,
+        //             points: bet.points,
         //             synced: true
         //         })
         //     })
@@ -158,10 +164,24 @@ export async function GET(request) {
         }
     })
 
+    let [syncedFixture] = syncedFixtures
+
+    const { error: bulkUpdateError } = await supabase.from('bets').upsert(syncedFixture.bets)
+
+    if (bulkUpdateError) {
+        return NextResponse.json({ failedAt: "bulkUpdate", error: bulkUpdateError }, { status })
+    }
+
+    const { data: fixtureUpdate, error: fixtureUpdateError } = await supabase.from('fixtures').update({ isSynced: true }).eq('id', syncedFixture.id)
+
+    if (fixtureUpdateError) {
+        return NextResponse.json({ failedAt: "fixtureUpdate", error: fixtureUpdateError }, { status })
+    }
+
     return NextResponse.json(
         {
-            syncedFixtures,
-            sync: listOfBets.length == 0 ? false : true
+            syncedFixture,
+            sync: !!fixtureUpdate
         }
     )
 }

@@ -12,7 +12,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
-    nickname: z.string().min(4, { 
+    nickname: z.string().min(4, {
         message: "O nick precisa ser maior que 4 caracteres"
     }).max(32, {
         message: "O nick só pode ter 32 caracteres"
@@ -45,14 +45,14 @@ export default function SignupForm() {
     async function onSubmit(values) {
         try {
             await fetch("/api/signup", {
-                method: "POST", 
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(values)
             });
             return router.push('/comingsoon')
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
     }

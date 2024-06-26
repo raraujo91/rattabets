@@ -6,9 +6,7 @@ import { FlagIcon } from "react-flag-kit"
 export default function MatchCard({ fixture, user }) {
     const router = useRouter()
 
-    const betScore = fixture.bets.length > 0 ? fixture.bets.find(bet => bet.userId == user?.id) : false;
-
-    console.log(fixture.gameId, betScore)
+    const betScore = fixture.bets.length > 0 ? fixture.bets.find(bet => bet.userId.id == user?.id) : false;
 
     let flagSize = 28;
 
