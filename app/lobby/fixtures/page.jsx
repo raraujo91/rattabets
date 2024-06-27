@@ -11,7 +11,7 @@ async function fetchData() {
 
     const supabase = createClient()
 
-    const { data: championships, error: championshipsError } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*, userId(*)))`).gt('fixtures.startsAt', moment().subtract(1, 'days').toISOString())
+    const { data: championships, error: championshipsError } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*, userId(*)))`).gte('fixtures.startsAt', moment().subtract(1, 'days').toISOString())
 
     if (championshipsError) {
         throw new Error(JSON.stringify(championshipsError, null, 2))

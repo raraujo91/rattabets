@@ -207,9 +207,12 @@ export default function BetForm({ fixture, rules, user }) {
             </TabsContent>
             <TabsContent value="bets">
                 <Card>
-                    <CardContent className="pt-4">
+                    <CardHeader>
+                        <CardTitle>Ranking da partida</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-4 text-xl">
                         {bets.map(bet => {
-                            return(
+                            return (
                                 <div key={bet.id} className='flex justify-between'>
                                     <p>{bet.userId.nickname}</p>
                                     <p className='font-bold'>{bet.points}</p>
@@ -247,7 +250,7 @@ export default function BetForm({ fixture, rules, user }) {
                         </div>
                         <div name="rules" className='mt-6'>
                             {rules.map(rule => {
-                                if(rule.type == "overUnder") {
+                                if (rule.type == "overUnder") {
                                     return (
                                         <div key={rule.id} className='flex justify-between'>
                                             <p>{rule.description}</p>
