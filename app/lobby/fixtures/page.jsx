@@ -57,12 +57,14 @@ export default async function FixturePage({ searchParams }) {
                                 </CardHeader>
                                 <CardContent> 
                                     {points.map(user => {
-                                        return (
-                                            <div key={user.userId} className="flex justify-between">
-                                                <p>{user.profiles.nickname}</p>
-                                                <p className="font-bold">{user.points}</p>
-                                            </div>
-                                        )
+                                        if(user.championshipId == championship.slug){
+                                            return (
+                                                <div key={user.userId} className="flex justify-between">
+                                                    <p>{user.profiles.nickname}</p>
+                                                    <p className="font-bold">{user.points}</p>
+                                                </div>
+                                            )
+                                        }
                                     })}
                                 </CardContent>
                             </Card>

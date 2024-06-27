@@ -161,7 +161,7 @@ export default function BetForm({ fixture, rules, user }) {
                     <div className='flex flex-col font-bold text-4xl w-1/4 justify-center items-center'>
                         <FlagIcon code={fixture.awayTeam.flag} size={64} /><p>{fixture.awayTeam.initials}</p></div>
                 </div>
-                <Card className={`w-full py-6 px-10 mb-8 ${locked ? 'mt-8' : ''}`}>
+                <Card className={`w-full py-6 px-10 mb-8 border-0 ${locked ? 'mt-8' : ''}`}>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 divide-y divide-slate-700">
                             {
@@ -185,8 +185,8 @@ export default function BetForm({ fixture, rules, user }) {
                                                                         }
                                                                     })
                                                                 }}>
-                                                                    <ToggleGroupItem className={`w-full text-2xl`} value="over" disabled={locked}><FaPlus /><p>{rule.defaultSpread}</p></ToggleGroupItem>
-                                                                    <ToggleGroupItem className={`w-full text-2xl`} value="under" disabled={locked}><FaMinus /><p>{rule.defaultSpread}</p></ToggleGroupItem>
+                                                                    <ToggleGroupItem className={`w-full text-2xl data-[state=on]:border-2 data-[state=on]:border-slate-200`} value="over" disabled={locked}><FaPlus /><p>{rule.defaultSpread}</p></ToggleGroupItem>
+                                                                    <ToggleGroupItem className={`w-full text-2xl data-[state=on]:border-2 data-[state=on]:border-slate-200`} value="under" disabled={locked}><FaMinus /><p>{rule.defaultSpread}</p></ToggleGroupItem>
                                                                 </ToggleGroup>
                                                             </FormControl>
                                                         </FormItem>

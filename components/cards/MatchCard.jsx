@@ -17,6 +17,9 @@ export default function MatchCard({ fixture, user }) {
     return (
         <Card onClick={() => router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)} key={fixture.id} className="bg-card-light my-2 p-8 active:bg-slate-400 hover:cursor-pointer">
             <div className="flex text-background space-x-4 items-center">
+            <div className="flex flex-col text-center items-center">
+                    <p className="text-2xl font-bold">#{fixture.gameId}</p>
+                </div>
                 <div className="flex flex-col items-center">
                     <div className="font-light">{dateFormatted}</div>
                     <div className="font-bold">{hourFormatted}</div>
