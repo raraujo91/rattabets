@@ -64,13 +64,15 @@ export default function BetForm({ fixture, rules, user }) {
     async function onSubmit() {
         let payload = {
             fixtureId: fixture.id,
-            userId: user.id,
             championshipId: fixture.championshipId,
             ...userBet
         }
 
         payload.homeScore = homeScore
         payload.awayScore = awayScore
+        payload.userId = user?.id
+
+        console.log(payload)
 
         if (mode == "create") {
             const { error: createError } = await supabase.from('bets').insert(payload)
