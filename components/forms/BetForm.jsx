@@ -47,6 +47,8 @@ export default function BetForm({ fixture, rules, user }) {
 
         setLocked(timeNow.diff(gameTime) > 0)
 
+        bets.sort((a, b) => b.points - a.points)
+
         if (bets) {
             let bet = bets.find(bet => bet.userId.id == user?.id)
             if (bet) {

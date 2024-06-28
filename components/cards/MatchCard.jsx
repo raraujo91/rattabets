@@ -8,7 +8,7 @@ export default function MatchCard({ fixture, user }) {
 
     const betScore = fixture.bets.length > 0 ? fixture.bets.find(bet => bet.userId.id == user?.id) : false;
 
-    let flagSize = 28;
+    let flagSize = 32;
 
     let matchDate = new Date(fixture.startsAt)
     let dateFormatted = `${matchDate.getDate()}/${String(matchDate.getMonth() + 1).padStart(2, '0')}`
@@ -29,7 +29,7 @@ export default function MatchCard({ fixture, user }) {
                 <div className="w-full text-xl space-y-2">
                     <div className="flex justify-between">
                         <div className="flex space-x-2">
-                            <FlagIcon className="rounded-full" code={fixture.homeTeam.flag} size={flagSize} />
+                            <a className="flex items-center w-8 h-full overflow-hidden rounded-full"><FlagIcon className="h-full" code={fixture.homeTeam.flag} size={flagSize} /></a>
                             <a>{fixture.homeTeam.name}</a>
                         </div>
                         <div className="w-12">
@@ -41,7 +41,7 @@ export default function MatchCard({ fixture, user }) {
                     </div>
                     <div className="flex justify-between">
                         <div className="flex space-x-2">
-                            <FlagIcon className="rounded-full" code={fixture.awayTeam.flag} size={flagSize} />
+                            <a className="flex items-center w-8 h-full overflow-hidden rounded-full"><FlagIcon className="h-full" code={fixture.awayTeam.flag} size={flagSize} /></a>
                             <a>{fixture.awayTeam.name}</a>
                         </div>
                         <div className="w-12">

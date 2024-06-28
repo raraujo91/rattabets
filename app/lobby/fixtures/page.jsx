@@ -1,6 +1,7 @@
-import MatchCard from "@/components/cards/MatchCard"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import FilterWrapper from "@/components/forms/FilterWrapper"
+
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from 'next/navigation'
 import moment from "moment"
@@ -11,11 +12,15 @@ async function fetchData() {
 
     const supabase = createClient()
 
-    const { data: championships, error: championshipsError } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*, userId(*)))`).gte('fixtures.startsAt', moment().subtract(1, 'days').toISOString())
+    const { data: championships, error: championshipsError } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*, userId(*)))`).gte('fixtures.startsAt', moment().subtract(7, 'days').toISOString())
 
     if (championshipsError) {
         throw new Error(JSON.stringify(championshipsError, null, 2))
     }
+
+    championships.map(championship => {
+        return championship.fixtures.sort((a, b) => b.gameId - a.gameId)
+    })
 
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -25,7 +30,7 @@ async function fetchData() {
 
     const { data: points, error: profilesError } = await supabase.from('bets').select(`championshipId, userId, profiles(*), points:points.sum()`)
 
-    console.log(points)
+    points.sort((a, b) => b.points - a.points)
 
     if (profilesError) {
         throw new Error(JSON.stringify(profilesError, null, 2))
@@ -56,7 +61,7 @@ export default async function FixturePage({ searchParams }) {
                                     <CardTitle>Ranking</CardTitle>
                                 </CardHeader>
                                 <CardContent> 
-                                    {points.map(user => {
+                                    {points.map((user, i) => {
                                         if(user.championshipId == championship.slug){
                                             return (
                                                 <div key={user.userId} className="flex justify-between">
@@ -68,15 +73,7 @@ export default async function FixturePage({ searchParams }) {
                                     })}
                                 </CardContent>
                             </Card>
-                            {
-                                championship.fixtures.map(fixture => {
-                                    if (fixture.championshipId.includes(championship.slug)) {
-                                        return (
-                                            <MatchCard key={fixture.id} fixture={fixture} user={user} />
-                                        )
-                                    }
-                                })
-                            }
+                            <FilterWrapper championship={championship} user={user} />
                         </TabsContent>
                     )
                 })}
