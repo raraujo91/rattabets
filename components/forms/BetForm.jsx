@@ -56,7 +56,7 @@ export default function BetForm({ fixture, rules, user }) {
                 setMode("edit")
             }
         }
-    }, [bets, user?.id])
+    }, [bets, user?.id, fixture.startsAt])
 
     const { toast } = useToast()
     const router = useRouter()
@@ -246,7 +246,7 @@ export default function BetForm({ fixture, rules, user }) {
                                                 {rules.map(rule => {
                                                     if (rule.type == "overUnder") {
                                                         return (
-                                                            <div className='flex justify-between'>
+                                                            <div key={bet.id} className='flex justify-between'>
                                                                 <div>
                                                                     {rule.description}
                                                                 </div>
