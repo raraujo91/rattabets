@@ -23,7 +23,7 @@ export default async function FixturePage({ params }) {
 
     if(error) {
         console.error(error)
-        throw new Error(error)
+        throw new Error(JSON.stringify(error, null, 2))
     }
 
     return (

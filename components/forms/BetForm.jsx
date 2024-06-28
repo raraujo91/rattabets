@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormField, FormControl, FormItem, FormLabel } from '@/components/ui/form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FlagIcon } from 'react-flag-kit'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import { FaPlus, FaMinus } from "react-icons/fa6";
@@ -210,12 +210,62 @@ export default function BetForm({ fixture, rules, user }) {
                     <CardHeader>
                         <CardTitle>Ranking da partida</CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-4 text-xl">
+                    <CardContent className="pt-4">
                         {bets.map(bet => {
                             return (
-                                <div key={bet.id} className='flex justify-between'>
-                                    <p>{bet.userId.nickname}</p>
-                                    <p className='font-bold'>{bet.points}</p>
+                                <div key={bet.id} className='mb-4'>
+                                    <div className='font-bold flex justify-between text-2xl mx-4'>
+                                        <p>{bet.userId.nickname}</p>
+                                        <p className='font-bold'>
+                                            {fixture.isSynced ? bet.points : "🆗"}
+                                        </p>
+                                    </div>
+                                    {fixture.isFinished && (
+                                        <Card variant="outline" className="border-slate-600 p-4 mt-2 my-4">
+                                            <div name="score" className='my-2 text-xl'>
+                                                <div className='flex justify-between'>
+                                                    <div name="home-team-block" className='flex items-center space-x-2'>
+                                                        <FlagIcon code={fixture.homeTeam.flag} size={24} />
+                                                        <p className='text-lg font-bold'>{fixture.homeTeam.name}</p>
+                                                    </div>
+                                                    <div className='font-bold'>
+                                                        {bet.homeScore}
+                                                    </div>
+                                                </div>
+                                                <div className='flex justify-between'>
+                                                    <div name="home-team-block" className='flex items-center space-x-2'>
+                                                        <FlagIcon code={fixture.awayTeam.flag} size={24} />
+                                                        <p className='text-lg font-bold'>{fixture.awayTeam.name}</p>
+                                                    </div>
+                                                    <div className='font-bold'>
+                                                        {bet.awayScore}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className='flex flex-col justify-between'>
+                                                {rules.map(rule => {
+                                                    if (rule.type == "overUnder") {
+                                                        return (
+                                                            <div className='flex justify-between'>
+                                                                <div>
+                                                                    {rule.description}
+                                                                </div>
+                                                                <div className='text-lg'>
+                                                                    <a className='text-xs'>{`${bet[rule.keyword] == "over" ? "Mais de" : "Menos de"}`}</a>
+                                                                    <a>{` ${rule.defaultSpread} `}</a>
+                                                                    {fixture.isSynced && (
+                                                                        <a>
+                                                                            {bet[rule.keyword] == "over" && fixture[rule.keyword] > rule.defaultSpread ? "✅" : bet[rule.keyword] == "under" && fixture[rule.keyword] < rule.defaultSpread ? "✅" : "❌"}
+                                                                        </a>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+                                                })}
+                                            </div>
+                                        </Card>
+                                    )}
                                 </div>
                             )
                         })}

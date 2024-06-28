@@ -7,10 +7,17 @@
 - [x] Filtra jogos por campeonato
 - [x] Seleciona jogo para apostar
 - [x] Aposta no jogo 
-- [ ] Edita aposta (até inicio do jogo) // moment.diff
+- [x] Edita aposta (até inicio do jogo) // moment.diff
 - [x] Verifica resultados do jogo [on-going]
 - [x] Verifica resultados das apostas [on-going]
-- [ ] Verifica ranking dos usuarios/aposta 
+- [x] Verifica ranking dos usuarios/aposta
+
+### Melhorias
+
+- [ ] Muitas chamadas de conexão
+- [ ] Validação de usuário na tela de /auth
+- [ ] Apostas após jogo começar
+- [ ] Ordenar ranking
 
 ````
 // Placa  exato = +10 (3 gols de diferença + 5)
