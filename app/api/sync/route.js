@@ -137,7 +137,7 @@ export async function GET(request) {
 
             if(bet.isHeroUsed) {
                 let heroMetadata = fixture.championshipId.heros.find(hero => hero.id == bet.heroId)
-                betCalcs.points = Math.ceil(betPoints.points * heroMetadata.power)
+                betCalcs.points = Math.ceil(betCalcs.points * heroMetadata.power)
             }
 
             // TODO: Implementar logica de PENALTIS
