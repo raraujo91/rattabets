@@ -10,7 +10,7 @@ export async function GET(request) {
 
     const supabase = createClient()
 
-    const { data: fixtures, error: fixturesError, status } = await supabase.from('fixtures').select('*, bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId))
+    const { data: fixtures, error: fixturesError, status } = await supabase.from('fixtures').select('*, championshipId(*, heros(*)), bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId))
 
     if (fixturesError) {
         return NextResponse.json({ failedAt: "fixtures", error: fixturesError }, { status })
@@ -135,28 +135,15 @@ export async function GET(request) {
                 }
             })
 
+            if(bet.isHeroUsed) {
+                let heroMetadata = fixture.championshipId.heros.find(hero => hero.id == bet.heroId)
+                betCalcs.points = Math.ceil(betPoints.points * heroMetadata.power)
+            }
+
             // TODO: Implementar logica de PENALTIS
             return betCalcs;
 
         })
-
-
-        // betResults.forEach(bet => {
-        //     fetch(`http://localhost:7000/bets/${bet.id}`, {
-        //         method: 'PUT',
-        //         body: JSON.stringify({
-        //             points: bet.points,
-        //             synced: true
-        //         })
-        //     })
-        // })
-
-        // fetch(`http://localhost:7000/fixtures/${fixture.id}`, {
-        //     method: 'PUT',
-        //     body: JSON.stringify({
-        //         isSynced: true
-        //     })
-        // })
 
         return {
             id: fixture.id,
