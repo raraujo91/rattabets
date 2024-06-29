@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
-import { Form, FormField, FormControl, FormItem, FormLabel } from '@/components/ui/form'
+import { Form, FormField, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FlagIcon } from 'react-flag-kit'
 import { useEffect, useState } from 'react'
@@ -14,10 +14,10 @@ import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { useToast } from '../ui/use-toast'
-import { Separator } from '../ui/separator'
 import { createClient } from '@/utils/supabase/client'
 import moment from 'moment'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Switch } from '../ui/switch'
 
 const formSchema = z.object({
     yellowCards: z.string(),
@@ -26,11 +26,11 @@ const formSchema = z.object({
     freeKickGoals: z.string(),
     headerGoals: z.string(),
     longRangeGoals: z.string(),
-    penaltyGoals: z.string()
+    penaltyGoals: z.string(),
+    isHeroUsed: z.string().optional()
 })
 
-
-export default function BetForm({ fixture, rules, user }) {
+export default function BetForm({ fixture, rules, user, profile }) {
     const supabase = createClient()
 
     const { bets } = fixture
@@ -40,6 +40,8 @@ export default function BetForm({ fixture, rules, user }) {
     let [userBet, setUserBet] = useState({})
     let [mode, setMode] = useState("create")
     let [locked, setLocked] = useState(false)
+    let [heroState, setHeroState] = useState()
+    let [heroMetadata, setHeroMetadata] = useState({})
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
@@ -56,7 +58,32 @@ export default function BetForm({ fixture, rules, user }) {
                 setAwayScore(bet.awayScore)
                 setUserBet(bet)
                 setMode("edit")
+                console.log("server-state-bet: ", bet)
+                
+                if(bet.isHeroUsed == true) {
+                    setHeroMetadata(fixture.championshipId.heros.find(hero => hero.id == bet.heroId))
+                    setHeroState(bet.isHeroUsed)
+                } else {
+                    setHeroMetadata(fixture.championshipId.heros.find(hero => {
+                        if(hero.id == profile.heroId) {
+                            return hero.id == profile.heroId
+                        } 
+        
+                        return {}
+                    }))
+                    setHeroState(bet.isHeroUsed)
+                }
+
+
             }
+        } else {
+            setHeroMetadata(fixture.championshipId.heros.find(hero => {
+                if(hero.id == profile.heroId) {
+                    return hero.id == profile.heroId
+                } 
+
+                return {}
+            }))
         }
     }, [bets, user?.id, fixture.startsAt])
 
@@ -66,7 +93,7 @@ export default function BetForm({ fixture, rules, user }) {
     async function onSubmit() {
         let payload = {
             fixtureId: fixture.id,
-            championshipId: fixture.championshipId,
+            championshipId: fixture.championshipId.slug,
             ...userBet
         }
 
@@ -74,12 +101,17 @@ export default function BetForm({ fixture, rules, user }) {
         payload.awayScore = awayScore
         payload.userId = user?.id
 
-        console.log(payload)
-
         if (mode == "create") {
             const { error: createError } = await supabase.from('bets').insert(payload)
-            if (createError) {
-                throw new Error(JSON.stringify(createError, null, 2))
+            const { error: profileError } = await supabase.from('profiles').update({
+                heroLocked: heroState,
+                heroId: heroState ? null : heroMetadata.id
+            }).eq('id', user?.id)
+
+            let error = profileError || createError
+
+            if (error) {
+                throw new Error(JSON.stringify(error, null, 2))
             }
 
             toast({
@@ -90,8 +122,15 @@ export default function BetForm({ fixture, rules, user }) {
 
         if (mode == "edit") {
             const { error: editError } = await supabase.from('bets').upsert(payload)
+            const { error: profileError } = await supabase.from('profiles').update({
+                heroLocked: heroState,
+                heroId: heroState ? null : heroMetadata.id
+            }).eq('id', user?.id)
+
+            let error = editError || profileError
+
             if (editError) {
-                throw new Error(JSON.stringify(editError, null, 2))
+                throw new Error(JSON.stringify(error, null, 2))
             }
 
             toast({
@@ -100,8 +139,8 @@ export default function BetForm({ fixture, rules, user }) {
             })
         }
 
-        router.push(`/lobby/fixtures?goto=${fixture.championshipId}`)
-
+        router.refresh()
+        // router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
     }
 
     let defaultRulesValues = {
@@ -176,7 +215,7 @@ export default function BetForm({ fixture, rules, user }) {
                                                 key={rule.id}
                                                 control={form.control}
                                                 name={rule.keyword}
-                                                render={({ field }) => (
+                                                render={() => (
                                                     <>
                                                         <FormItem className="pt-2">
                                                             <FormLabel className="text-lg">{rule.description}</FormLabel>
@@ -193,12 +232,40 @@ export default function BetForm({ fixture, rules, user }) {
                                                                     <ToggleGroupItem className={`w-full text-2xl data-[state=on]:border-2 data-[state=on]:border-slate-200`} value="under" disabled={locked}><FaMinus /><p>{rule.defaultSpread}</p></ToggleGroupItem>
                                                                 </ToggleGroup>
                                                             </FormControl>
+                                                            <FormMessage variant="primary" />
                                                         </FormItem>
                                                     </>
                                                 )} />
                                         )
                                     }
                                 })
+                            }
+                            {
+                                (profile.heroLocked == false || userBet.isHeroUsed == true || Object.keys(heroMetadata).length !== 0) && (
+                                    <div className={`${heroMetadata ? '' : 'hidden'} pt-6`}>
+                                        <FormField
+                                            className="mt-2"
+                                            control={form.control}
+                                            name="isHeroUsed"
+                                            render={() => (
+                                                <FormItem className="flex justify-between">
+                                                    <FormLabel className="text-xl">{`Utilizar ${heroMetadata?.name} (+${(heroMetadata?.power * 100) - 100}%)`}</FormLabel>
+                                                    <FormControl>
+                                                        <Switch className="data-[state=unchecked]:bg-zinc-500" disabled={locked} checked={heroState} onCheckedChange={(checked) => {
+                                                            setHeroState(checked)
+                                                            setUserBet(prevBet => {
+                                                                return {
+                                                                    ...prevBet,
+                                                                    isHeroUsed: checked,
+                                                                    heroId: checked ? heroMetadata?.id : null
+                                                                }
+                                                            })
+                                                        }} />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )} />
+                                    </div>
+                                )
                             }
                             <div className={`w-full max-w-screen bottom-2 ${locked ? "hidden" : ""}`}>
                                 <Button type="submit" className="w-full hover:bg-green-700 active:bg-green-800">{mode == "create" ? "Salvar" : "Editar"}</Button>

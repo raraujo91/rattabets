@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
-import { Form, FormField, FormControl, FormItem, FormLabel } from '@/components/ui/form'
+import { Form, FormField, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Card, CardTitle } from '@/components/ui/card'
 import { useState } from 'react'
@@ -19,7 +19,7 @@ const formSchema = z.object({
 
 export default function LoginForm() {
 
-    let [loginState, setLoginState] = useState(null)
+    let [loading, setLoading] = useState(false)
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -32,6 +32,7 @@ export default function LoginForm() {
     const router = useRouter()
 
     function onSubmit(values) {
+        setLoading(!loading)
         fetch('/api/login', {
             method: "POST",
             headers: {
@@ -42,6 +43,7 @@ export default function LoginForm() {
         })
         .then(response => {
             if(response.ok) {
+                setLoading(!loading)
                 router.push('/lobby')
             }            
         })
@@ -61,6 +63,7 @@ export default function LoginForm() {
                                 <FormControl>
                                     <Input placeholder="E-mail" type="email" {...field}></Input>
                                 </FormControl>
+                                <FormMessage variant="primary" />
                             </FormItem>
                         )} />
                     <FormField
@@ -71,10 +74,11 @@ export default function LoginForm() {
                                 <FormControl>
                                     <Input placeholder="Senha" type="password" {...field}></Input>
                                 </FormControl>
+                                <FormMessage variant="primary" />
                             </FormItem>
                         )} />
                     <div className="flex space-x-4 justify-end pt-4">
-                        <Button type="submit">Entrar</Button>
+                        <Button type="submit" disabled={loading}>{loading ? "Carregando..." : "Entrar"}</Button>
                     </div>
                 </form>
             </Form>

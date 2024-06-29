@@ -15,7 +15,7 @@ export default function MatchCard({ fixture, user }) {
     let hourFormatted = `${matchDate.getHours()}:${String(matchDate.getMinutes()).padStart(2, '0')}`
 
     return (
-        <Card onClick={() => router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)} key={fixture.id} className="bg-card-light my-2 p-6 active:bg-slate-400 hover:cursor-pointer">
+        <Card onClick={() => router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)} key={fixture.id} className="bg-card-light my-2 p-6 active:bg-slate-400 hover:cursor-pointer hover:bg-slate-200">
             <div className="flex text-background space-x-4 items-center">
                 <div className="relative flex flex-col">
                     <div className="absolute -left-5 bottom-6 bg-zinc-900 p-1 rounded-md">
