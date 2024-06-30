@@ -241,7 +241,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                 })
                             }
                             {
-                                (profile.heroLocked == false || userBet.isHeroUsed == true || Object.keys(heroMetadata).length !== 0) && (
+                                (fixture.championshipId.heros.length !== 0 && profile.heroLocked == false || userBet.isHeroUsed == true) && (
                                     <div className={`${heroMetadata ? '' : 'hidden'} pt-6`}>
                                         <FormField
                                             className="mt-2"

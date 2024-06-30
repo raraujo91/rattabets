@@ -7,12 +7,10 @@ export async function POST(request) {
 
   const { email, password } = await request.json()
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { error } = await supabase.auth.signInWithPassword({
     email,
     password
   })
-
-  console.log(data, error);
 
   if (error) {
     return NextResponse.json({ login: false }, {
