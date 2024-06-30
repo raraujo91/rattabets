@@ -17,19 +17,17 @@ export default function MatchCard({ fixture, user }) {
     return (
         <Card onClick={() => router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)} key={fixture.id} className="bg-card-light my-2 p-6 active:bg-slate-400 hover:cursor-pointer hover:bg-slate-200">
             <div className="flex text-background space-x-4 items-center">
-                <div className="relative flex flex-col">
-                    <div className="absolute -left-5 bottom-6 bg-zinc-900 p-1 rounded-md">
+                <div className="flex flex-col items-center">
+                    <div className="bg-zinc-900 p-1 rounded-md w-full align-middle text-center">
                         <p className="text-zinc-100 text-sm font-bold">J{fixture.gameId}</p>
                     </div>
-                </div>
-                <div className="flex flex-col items-center">
                     <div className="font-light">{dateFormatted}</div>
                     <div className="font-bold">{hourFormatted}</div>
                 </div>
                 <div className="w-full text-xl space-y-2">
                     <div className="flex justify-between">
                         <div className="flex space-x-2">
-                            <a className="flex items-center w-8 h-full overflow-hidden rounded-full"><FlagIcon className="h-full" code={fixture.homeTeam.flag} size={flagSize} /></a>
+                            <a className="flex items-center justify-center"><FlagIcon className="rounded-lg h-full" code={fixture.homeTeam.flag} size={flagSize} /></a>
                             <a>{fixture.homeTeam.name}</a>
                         </div>
                         <div className="w-12">
@@ -41,7 +39,7 @@ export default function MatchCard({ fixture, user }) {
                     </div>
                     <div className="flex justify-between">
                         <div className="flex space-x-2">
-                            <a className="flex items-center w-8 h-full overflow-hidden rounded-full"><FlagIcon className="h-full" code={fixture.awayTeam.flag} size={flagSize} /></a>
+                            <a className="flex items-center justify-center"><FlagIcon className="rounded-lg h-full" code={fixture.awayTeam.flag} size={flagSize} /></a>
                             <a>{fixture.awayTeam.name}</a>
                         </div>
                         <div className="w-12">

@@ -7,10 +7,11 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url)
     const gameId = searchParams.get('gameId')
+    const championship = searchParams.get('championship')
 
     const supabase = createClient()
 
-    const { data: fixtures, error: fixturesError, status } = await supabase.from('fixtures').select('*, championshipId(*, heros(*)), bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId))
+    const { data: fixtures, error: fixturesError, status    } = await supabase.from('fixtures').select('*, championshipId(*, heros(*)), bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId)).eq('championshipId', championship)
 
     if (fixturesError) {
         return NextResponse.json({ failedAt: "fixtures", error: fixturesError }, { status })
