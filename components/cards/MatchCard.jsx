@@ -11,7 +11,7 @@ export default function MatchCard({ fixture, user }) {
     let flagSize = 32;
 
     let matchDate = new Date(fixture.startsAt)
-    let dateFormatted = `${matchDate.getDate()}/${String(matchDate.getMonth() + 1).padStart(2, '0')}`
+    let dateFormatted = `${String(matchDate.getDate()).padStart(2, '0')}/${String(matchDate.getMonth() + 1).padStart(2, '0')}`
     let hourFormatted = `${matchDate.getHours()}:${String(matchDate.getMinutes()).padStart(2, '0')}`
 
     return (

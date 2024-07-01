@@ -27,12 +27,11 @@ const formSchema = z.object({
     headerGoals: z.string(),
     longRangeGoals: z.string(),
     penaltyGoals: z.string(),
-    isHeroUsed: z.string().optional()
+    isHeroUsed: z.string().optional(),
+    postRegulationResult: z.string().optional()
 })
 
 export default function BetForm({ fixture, rules, user, profile }) {
-    const supabase = createClient()
-
     const { bets } = fixture
 
     let [homeScore, setHomeScore] = useState(0)
@@ -40,13 +39,15 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [userBet, setUserBet] = useState({})
     let [mode, setMode] = useState("create")
     let [locked, setLocked] = useState(false)
+    let [hero, setHero] = useState({})
     let [heroState, setHeroState] = useState()
-    let [heroMetadata, setHeroMetadata] = useState({})
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
         const gameTime = moment(fixture.startsAt).utcOffset("-03:00")
+        const heroMetadata = profile.heros.find(hero => hero.metadata.championship == fixture.championshipId.slug)
 
+        setHero(heroMetadata || false)
         setLocked(timeNow.diff(gameTime) > 0)
 
         bets.sort((a, b) => b.points - a.points)
@@ -58,32 +59,8 @@ export default function BetForm({ fixture, rules, user, profile }) {
                 setAwayScore(bet.awayScore)
                 setUserBet(bet)
                 setMode("edit")
-                console.log("server-state-bet: ", bet)
-                
-                if(bet.isHeroUsed == true) {
-                    setHeroMetadata(fixture.championshipId.heros.find(hero => hero.id == bet.heroId))
-                    setHeroState(bet.isHeroUsed)
-                } else {
-                    setHeroMetadata(fixture.championshipId.heros.find(hero => {
-                        if(hero.id == profile.heroId) {
-                            return hero.id == profile.heroId
-                        } 
-        
-                        return {}
-                    }))
-                    setHeroState(bet.isHeroUsed)
-                }
-
-
+                setHeroState(bet.isHeroUsed)
             }
-        } else {
-            setHeroMetadata(fixture.championshipId.heros.find(hero => {
-                if(hero.id == profile.heroId) {
-                    return hero.id == profile.heroId
-                } 
-
-                return {}
-            }))
         }
     }, [bets, user?.id, fixture.startsAt])
 
@@ -102,45 +79,54 @@ export default function BetForm({ fixture, rules, user, profile }) {
         payload.userId = user?.id
 
         if (mode == "create") {
-            const { error: createError } = await supabase.from('bets').insert(payload)
-            const { error: profileError } = await supabase.from('profiles').update({
-                heroLocked: heroState,
-                heroId: heroState ? null : heroMetadata.id
-            }).eq('id', user?.id)
+            try {
+                await fetch('/api/bets/create', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        payload: payload,
+                        lockHero: heroState
+                    })
+                })
 
-            let error = profileError || createError
+                toast({
+                    variant: "default",
+                    title: "Aposta criada"
+                })
 
-            if (error) {
+                // router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
+                router.refresh()
+            } catch (error) {
                 throw new Error(JSON.stringify(error, null, 2))
             }
-
-            toast({
-                variant: "default",
-                title: "Aposta criada"
-            })
         }
 
         if (mode == "edit") {
-            const { error: editError } = await supabase.from('bets').upsert(payload)
-            const { error: profileError } = await supabase.from('profiles').update({
-                heroLocked: heroState,
-                heroId: heroState ? null : heroMetadata.id
-            }).eq('id', user?.id)
+            try {
+                await fetch('/api/bets/edit', {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        payload: payload,
+                        lockHero: heroState
+                    })
+                })
 
-            let error = editError || profileError
+                toast({
+                    variant: "default",
+                    title: "Aposta editada"
+                })
 
-            if (editError) {
-                throw new Error(JSON.stringify(error, null, 2))
+                router.refresh()
+                // router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
+            } catch (error) {
+                throw new Error(error)
             }
-
-            toast({
-                variant: "default",
-                title: "Aposta editada"
-            })
         }
-
-        router.refresh()
-        // router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
     }
 
     let defaultRulesValues = {
@@ -208,6 +194,36 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 divide-y divide-slate-700">
                             {
+                                (fixture.isPlayoff == true && homeScore == awayScore) && (
+                                    <div>
+                                        <FormField
+                                            control={form.control}
+                                            name="postRegulationResult"
+                                            render={() => (
+                                                <FormItem>
+                                                    <FormLabel className="text-lg">Escolha um vencedor</FormLabel>
+                                                    <FormControl>
+                                                        <ToggleGroup className="justify-between pb-2" type="single" value={userBet.postRegulationResult} onValueChange={(value) => {
+                                                            setUserBet(prevBet => {
+                                                                return {
+                                                                    ...prevBet,
+                                                                    "postRegulationResult": homeScore == awayScore ? value : null
+                                                                }
+                                                            })
+                                                        }}>
+                                                            <ToggleGroupItem className={`w-full space-x-2 text-2xl data-[state=on]:border-2 data-[state=on]:border-slate-200`} value="home"><FlagIcon code={fixture.homeTeam.flag} size={32} /><span>{fixture.homeTeam.name}</span></ToggleGroupItem>
+                                                            <ToggleGroupItem className={`w-full space-x-2 text-2xl data-[state=on]:border-2 data-[state=on]:border-slate-200`} value="away"><FlagIcon code={fixture.awayTeam.flag} size={32} /><span>{fixture.awayTeam.name}</span></ToggleGroupItem>
+                                                        </ToggleGroup>
+                                                    </FormControl>
+                                                    <FormMessage variant="primary" />
+                                                </FormItem>
+                                            )
+                                            }
+                                        />
+                                    </div>
+                                )
+                            }
+                            {
                                 rules.map((rule, i) => {
                                     if (rule.active && rule.type == "overUnder") {
                                         return (
@@ -241,15 +257,23 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                 })
                             }
                             {
-                                (fixture.championshipId.heros.length !== 0 && profile.heroLocked == false || userBet.isHeroUsed == true) && (
-                                    <div className={`${'hidden'} pt-6`}>
+                                /*
+                                    TODO: corrigir logica para mostrar o Hero
+
+                                        1. Ter Hero disponível                                  bet.heroId !== ""
+                                        2. Hero existir no campeonato                           fixture.championshipId.heros.length !== 0 
+                                        3. Não estar bloqueado por ter utilizado em outro       profile.heroLocked == false
+                                        4. Ser o Hero que você utilizou na partida              bet.heroUsed !== null
+                                */
+                                (hero && hero.locked == false || hero.fixture_id == fixture.id) && (
+                                    <div className={`pt-6`}>
                                         <FormField
                                             className="mt-2"
                                             control={form.control}
                                             name="isHeroUsed"
                                             render={() => (
                                                 <FormItem className="flex justify-between">
-                                                    <FormLabel className="text-xl">{`Utilizar ${heroMetadata?.name} (+${(heroMetadata?.power * 100) - 100}%)`}</FormLabel>
+                                                    <FormLabel className="text-xl">{`Utilizar ${hero.metadata.name} (+${(hero.metadata.power * 100) - 100}%)`}</FormLabel>
                                                     <FormControl>
                                                         <Switch className="data-[state=unchecked]:bg-zinc-500" disabled={locked} checked={heroState} onCheckedChange={(checked) => {
                                                             setHeroState(checked)
@@ -257,7 +281,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                                                 return {
                                                                     ...prevBet,
                                                                     isHeroUsed: checked,
-                                                                    heroId: checked ? heroMetadata?.id : null
+                                                                    heroId: checked ? hero.metadata.id : null
                                                                 }
                                                             })
                                                         }} />
@@ -282,7 +306,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     <CardContent className="pt-4">
                         {bets.map(bet => {
                             return (
-                                <div key={bet.id} className='mb-4'>
+                                <div key={`${bet.id}-user-points`} className='mb-4'>
                                     <div className='font-bold flex justify-between text-2xl mx-4'>
                                         <p>{bet.userId.nickname}</p>
                                         <p className='font-bold'>
@@ -315,7 +339,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                                 {rules.map(rule => {
                                                     if (rule.type == "overUnder") {
                                                         return (
-                                                            <div key={bet.id} className='flex justify-between'>
+                                                            <div key={`${bet.id}-${rule.keyword}`} className='flex justify-between'>
                                                                 <div>
                                                                     {rule.description}
                                                                 </div>

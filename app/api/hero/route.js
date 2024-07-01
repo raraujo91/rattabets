@@ -23,10 +23,10 @@ export async function POST(request) {
 
     const supabase = createClient()
 
-    const { data, error } = await supabase.from('profiles').update({ 
-        heroId: heroId,
-        heroAvailable: false 
-    }).eq('id', userId)
+    const { data, error } = await supabase.from('heros_profiles').insert({ 
+        hero_id: heroId,
+        profile_id: userId 
+    })
 
     if(error) {
         throw new Error(JSON.stringify(error, null, 2))

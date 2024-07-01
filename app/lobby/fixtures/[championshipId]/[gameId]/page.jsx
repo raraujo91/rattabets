@@ -15,9 +15,9 @@ export const SaveButton = ({ show }) => {
 export default async function FixturePage({ params }) {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser() 
-    const { data: fixture, error: fixtureError } = await supabase.from('fixtures').select(`*, championshipId(*, heros(*)), bets(*, userId(*)), homeTeam(*), awayTeam(*)`).eq('gameId', params.gameId).limit(1).single()
+    const { data: fixture, error: fixtureError } = await supabase.from('fixtures').select(`*, championshipId(*, heros(*)), bets(*, userId(*)), homeTeam(*), awayTeam(*)`).eq('gameId', params.gameId).eq('championshipId', params.championshipId).limit(1).single()
     const { data: rules, error: rulesError } = await supabase.from('rules').select()
-    const { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', user?.id).limit(1).single()
+    const { data: profile, error: profileError } = await supabase.from('profiles').select(`*, heros:heros_profiles(*, metadata:hero_id(*))`).eq('id', user?.id).limit(1).single()
 
     const error = fixtureError || rulesError || profileError
 

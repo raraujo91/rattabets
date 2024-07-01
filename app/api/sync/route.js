@@ -136,12 +136,36 @@ export async function GET(request) {
                 }
             })
 
+            /*
+                TODO: prorrogação ou penaltis
+                    - Se mata-mata = TRUE
+                        - Se terminou em (OU) 
+                            - AET
+                            - PK
+                    - Se apostador foi de empate
+                        -  +5 pontos
+                    - Se apostador for de casa/fora
+                        - E vencedor for o mesmo da prorrogação
+                            - +3 pontos
+            */ 
+
+            if(fixture.isPlayoff) {
+                if(fixture.endedIn == "OT" || fixture.endedIn == "PK") {
+                    if(betResult == "draw" && bet.postRegulationResult == fixture.postRegulationResult) {
+                        betCalcs.points += 5
+                    }
+
+                    if(betResult == "home" || betResult == "away" && fixture.postRegulationResult) {
+                        betCalcs.points += 3
+                    }
+                }
+            }
+
             if(bet.isHeroUsed) {
                 let heroMetadata = fixture.championshipId.heros.find(hero => hero.id == bet.heroId)
                 betCalcs.points = Math.ceil(betCalcs.points * heroMetadata.power)
             }
 
-            // TODO: Implementar logica de PENALTIS
             return betCalcs;
 
         })
