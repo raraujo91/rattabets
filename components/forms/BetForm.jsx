@@ -202,7 +202,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                                 <FormItem>
                                                     <FormLabel className="text-lg">Escolha um vencedor</FormLabel>
                                                     <FormControl>
-                                                        <ToggleGroup className="justify-between pb-2" type="single" value={userBet.postRegulationResult} onValueChange={(value) => {
+                                                        <ToggleGroup className="justify-between pb-2" type="single" disabled={locked} value={userBet.postRegulationResult} onValueChange={(value) => {
                                                             setUserBet(prevBet => {
                                                                 return {
                                                                     ...prevBet,
