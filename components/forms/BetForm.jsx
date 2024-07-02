@@ -14,7 +14,6 @@ import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { useToast } from '../ui/use-toast'
-import { createClient } from '@/utils/supabase/client'
 import moment from 'moment'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '../ui/switch'
@@ -40,7 +39,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [mode, setMode] = useState("create")
     let [locked, setLocked] = useState(false)
     let [hero, setHero] = useState({})
-    let [heroState, setHeroState] = useState()
+    let [heroState, setHeroState] = useState(false)
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
@@ -96,7 +95,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     title: "Aposta criada"
                 })
 
-                // router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
+                router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
                 router.refresh()
             } catch (error) {
                 throw new Error(JSON.stringify(error, null, 2))
@@ -121,8 +120,8 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     title: "Aposta editada"
                 })
 
+                router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
                 router.refresh()
-                // router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
             } catch (error) {
                 throw new Error(error)
             }

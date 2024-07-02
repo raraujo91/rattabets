@@ -21,6 +21,7 @@ export async function PUT(request) {
     }
 
     revalidatePath('/', 'layout')
+
     return Response.json({
         edited: true
     })
