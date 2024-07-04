@@ -44,7 +44,6 @@ export default function HeroCard({ hero, available, id }) {
             <div className={`${selectedHero ? '' : 'hidden'} absolute flex items-center justify-center top-0 left-0 w-full min-h-screen bg-[rgba(0,0,0,0.95)] backdrop-blur-sm`}>
                 <div className="flex flex-col text-center justify-center absolute top-0 pt-14">
                     <p className="text-xl font-bold">Você recebeu um Hero!</p>
-                    <p className="text-xs">Com um Hero, você pode aumentar seus ganhos em uma partida.</p>
                 </div>
                 <Card className="bg-gradient-to-t from-primary from-5% absolute flex justify-center items-end overflow-hidden border-primary shadow-[0_0_30px_-10px_rgba(0,0,0,0.3)] shadow-primary">
                     <CardContent className="relative flex items-end py-0 px-6 w-[350px] h-[480px]">
