@@ -30,7 +30,7 @@ async function fetchData() {
         return championship.fixtures.sort((a, b) => b.gameId - a.gameId)
     })
 
-    const { data: profile, error: profileError } = await supabase.from('profiles').select('*').eq('id', user?.id).limit(1).single() 
+    const { data: profile, error: profileError } = await supabase.from('profiles').select('*, heros:heros_profiles(*, hero_id(*))').eq('id', user?.id).limit(1).single() 
 
     if (profileError) {
         throw new Error(JSON.stringify(profileError, null, 2))
@@ -50,6 +50,7 @@ async function fetchData() {
 export default async function FixturePage({ searchParams }) {
     const { championships, user, points, profile } = await fetchData()
     const startAtTab = searchParams?.goto
+    const newHeroAvailable = profile.heros.find(hero => hero.new == true)
 
     return (
         <>
@@ -86,7 +87,7 @@ export default async function FixturePage({ searchParams }) {
                     )
                 })}
             </Tabs>
-            { profile.heroAvailable && <HeroCard available={true} id={user?.id} />} 
+            { newHeroAvailable?.new && <HeroCard hero={newHeroAvailable} available={true} id={user?.id} />} 
         </>
     )
 }

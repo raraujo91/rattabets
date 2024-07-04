@@ -272,7 +272,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                             name="isHeroUsed"
                                             render={() => (
                                                 <FormItem className="flex justify-between">
-                                                    <FormLabel className="text-xl">{`Utilizar ${hero.metadata.name} (+${(hero.metadata.power * 100) - 100}%)`}</FormLabel>
+                                                    <FormLabel className="text-xl">{`⚡ ${hero.metadata.name} (+${(hero.metadata.power * 100) - 100}%)`}</FormLabel>
                                                     <FormControl>
                                                         <Switch className="data-[state=unchecked]:bg-zinc-500" disabled={locked} checked={heroState} onCheckedChange={(checked) => {
                                                             setHeroState(checked)
