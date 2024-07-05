@@ -5,15 +5,6 @@ import Link from "next/link";
 
 export default function Layout({ children  }) {
 
-  const hero = {
-    "id": "0393b4a0-73dd-4b9f-99d5-412df20067b0",
-    "id": "0393b4a0-73dd-4b9f-99d5-412df20067b0",
-    "name": "Florian Wirtz",
-    "slug": "wirtz",
-    "power": 0.2,
-    "packed": false
-  }
-
   return (
     <>
       <div className="relative px-4">

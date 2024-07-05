@@ -1,9 +1,10 @@
 'use client'
-import { useRouter } from "next/navigation";
-import { Card } from "../ui/card"
-import { FlagIcon } from "react-flag-kit"
 
-export default function MatchCard({ fixture, user }) {
+import { useRouter } from "next/navigation";
+import { FlagIcon } from "react-flag-kit"
+import { Card } from "../ui/card"
+
+export default function MatchCard({ fixture, user, loadingHandler }) {
     const router = useRouter()
 
     const betScore = fixture.bets.length > 0 ? fixture.bets.find(bet => bet.userId.id == user?.id) : false;
@@ -14,8 +15,13 @@ export default function MatchCard({ fixture, user }) {
     let dateFormatted = `${String(matchDate.getDate()).padStart(2, '0')}/${String(matchDate.getMonth() + 1).padStart(2, '0')}`
     let hourFormatted = `${matchDate.getHours()}:${String(matchDate.getMinutes()).padStart(2, '0')}`
 
+    const handleOnClick = () => {
+        loadingHandler(true)
+        router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)
+    }
+
     return (
-        <Card onClick={() => router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)} key={fixture.id} className="bg-card-light my-2 p-6 active:bg-slate-400 hover:cursor-pointer hover:bg-slate-200">
+        <Card onClick={handleOnClick} key={fixture.id} className="bg-card-light my-2 p-6 active:bg-slate-400 hover:cursor-pointer hover:bg-slate-200">
             <div className="flex text-background space-x-4 items-center">
                 <div className="flex flex-col items-center">
                     <div className="bg-zinc-900 p-1 rounded-md w-full align-middle text-center">

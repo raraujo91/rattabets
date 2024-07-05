@@ -3,9 +3,11 @@
 import { Switch } from "../ui/switch";
 import MatchCard from "../cards/MatchCard";
 import { useState } from "react";
+import Loading from "../misc/Loading";
 
 export default function FilterWrapper({ championship, user }) {
-    const [filteredResults, setFilteredResults] = useState(false) 
+    const [filteredResults, setFilteredResults] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     return (
         <main className="w-full">
@@ -19,13 +21,14 @@ export default function FilterWrapper({ championship, user }) {
                         if (fixture.championshipId.includes(championship.slug)) {
                             if(fixture.isFinished == filteredResults) {
                                 return (
-                                    <MatchCard key={fixture.id} fixture={fixture} user={user} />
+                                    <MatchCard key={fixture.id} fixture={fixture} user={user} loadingHandler={setLoading} />
                                 )
                             }
                         }
                     })
                 }
             </div>
+            <Loading action="Carregando..." state={loading} />
         </main>
     )
 }
