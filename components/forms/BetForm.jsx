@@ -41,7 +41,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [locked, setLocked] = useState(false)
     let [hero, setHero] = useState({})
     let [heroState, setHeroState] = useState(false)
-    let [loading, useLoading] = useState(false)
+    let [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
@@ -63,13 +63,13 @@ export default function BetForm({ fixture, rules, user, profile }) {
                 setHeroState(bet.isHeroUsed)
             }
         }
-    }, [bets, user?.id, fixture.startsAt])
+    }, [bets, user?.id, fixture.startsAt, fixture.championshipId.slug, fixture.id, profile.heros])
 
     const { toast } = useToast()
     const router = useRouter()
 
     async function onSubmit() {
-        useLoading(true)
+        setLoading(true)
         let payload = {
             fixtureId: fixture.id,
             championshipId: fixture.championshipId.slug,
@@ -98,7 +98,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     title: "Aposta criada"
                 })
 
-                useLoading(false)
+                setLoading(false)
 
                 router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
                 router.refresh()
@@ -125,7 +125,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     title: "Aposta editada"
                 })
 
-                useLoading(false)
+                setLoading(false)
 
                 router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
                 router.refresh()
