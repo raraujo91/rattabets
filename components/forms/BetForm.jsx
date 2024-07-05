@@ -44,7 +44,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
         const gameTime = moment(fixture.startsAt).utcOffset("-03:00")
-        const heroMetadata = profile.heros.find(hero => hero.locked == false && hero.metadata.championship == fixture.championshipId.slug || hero.fixture_id == fixture.id)
+        const heroMetadata = profile.heros.find(hero => hero.locked == false && hero.metadata.championship == fixture.championshipId.slug || hero.locked == true && hero.fixture_id == fixture.id)
 
         setHero(heroMetadata || false)
         setLocked(timeNow.diff(gameTime) > 0)
