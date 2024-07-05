@@ -9,10 +9,16 @@ export async function POST(request) {
 
     const { error: createError } = await supabase.from('bets').insert(payload)
 
-    const { error: profileError } = await supabase.from('heros_profiles').update({
-        locked: lockHero,
-        fixture_id: lockHero ? payload.fixtureId : null,
-    }).eq('profile_id', payload.userId)
+    const heroUpdate = supabase
+        .from('heros_profiles')
+        .update({ locked: lockHero, fixture_id: lockHero ? payload.fixtureId : null })
+        .eq('profile_id', payload.userId)
+
+    if(lockHero) {
+        heroUpdate.eq('hero_id', payload.heroId)
+    }
+
+    let { error: profileError } = await heroUpdate
 
     let error = profileError || createError
 

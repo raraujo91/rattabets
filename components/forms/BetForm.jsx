@@ -44,7 +44,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
         const gameTime = moment(fixture.startsAt).utcOffset("-03:00")
-        const heroMetadata = profile.heros.find(hero => hero.metadata.championship == fixture.championshipId.slug)
+        const heroMetadata = profile.heros.find(hero => hero.locked == false && hero.metadata.championship == fixture.championshipId.slug || hero.fixture_id == fixture.id)
 
         setHero(heroMetadata || false)
         setLocked(timeNow.diff(gameTime) > 0)
@@ -272,7 +272,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                             name="isHeroUsed"
                                             render={() => (
                                                 <FormItem className="flex justify-between">
-                                                    <FormLabel className="text-xl">{`⚡ ${hero.metadata.name} (+${(hero.metadata.power * 100) - 100}%)`}</FormLabel>
+                                                    <FormLabel className="text-lg">{`⚡ ${hero.metadata.name} (+${(hero.metadata.power * 100) - 100}%)`}</FormLabel>
                                                     <FormControl>
                                                         <Switch className="data-[state=unchecked]:bg-zinc-500" disabled={locked} checked={heroState} onCheckedChange={(checked) => {
                                                             setHeroState(checked)
