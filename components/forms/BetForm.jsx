@@ -1,23 +1,23 @@
 "use client"
+import moment from 'moment'
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
+import { FlagIcon } from 'react-flag-kit'
+import { useEffect, useState } from 'react'
+import { FaPlus, FaMinus } from "react-icons/fa6";
 
 import { Button } from '@/components/ui/button'
 import { Form, FormField, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FlagIcon } from 'react-flag-kit'
-import { useEffect, useState } from 'react'
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
-import { FaPlus, FaMinus } from "react-icons/fa6";
 import { useToast } from '../ui/use-toast'
-import moment from 'moment'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '../ui/switch'
-import Loading from '../misc/Loading'
+import { useLoadingContext } from '@/context/loading'
 
 const formSchema = z.object({
     yellowCards: z.string(),
@@ -41,7 +41,6 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [locked, setLocked] = useState(false)
     let [hero, setHero] = useState({})
     let [heroState, setHeroState] = useState(false)
-    let [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
@@ -69,7 +68,6 @@ export default function BetForm({ fixture, rules, user, profile }) {
     const router = useRouter()
 
     async function onSubmit() {
-        setLoading(true)
         let payload = {
             fixtureId: fixture.id,
             championshipId: fixture.championshipId.slug,
@@ -98,8 +96,6 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     title: "Aposta criada"
                 })
 
-                setLoading(false)
-
                 router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
                 router.refresh()
             } catch (error) {
@@ -124,8 +120,6 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     variant: "default",
                     title: "Aposta editada"
                 })
-
-                setLoading(false)
 
                 router.push(`/lobby/fixtures?goto=${fixture.championshipId.slug}`)
                 router.refresh()
@@ -414,7 +408,6 @@ export default function BetForm({ fixture, rules, user, profile }) {
                     </Card>
                 </TabsContent>
             </Tabs>
-        <Loading action="Salvando..." state={loading} />
         </>
     )
 }
