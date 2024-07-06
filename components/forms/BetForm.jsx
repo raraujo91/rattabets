@@ -17,7 +17,6 @@ import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import { useToast } from '../ui/use-toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '../ui/switch'
-import { useLoadingContext } from '@/context/loading'
 
 const formSchema = z.object({
     yellowCards: z.string(),
@@ -41,6 +40,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [locked, setLocked] = useState(false)
     let [hero, setHero] = useState({})
     let [heroState, setHeroState] = useState(false)
+    let [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
@@ -68,6 +68,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
     const router = useRouter()
 
     async function onSubmit() {
+        setLoading(true)
         let payload = {
             fixtureId: fixture.id,
             championshipId: fixture.championshipId.slug,
@@ -293,7 +294,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                     )
                                 }
                                 <div className={`w-full max-w-screen bottom-2 ${locked ? "hidden" : ""}`}>
-                                    <Button type="submit" className="w-full hover:bg-green-700 active:bg-green-800">{mode == "create" ? "Salvar" : "Editar"}</Button>
+                                    <Button type="submit" className="w-full hover:bg-green-700 active:bg-green-800" disabled={loading}>{loading ? "Salvando..." : mode == "create" ? "Salvar" : "Editar"}</Button>
                                 </div>
                             </form>
                         </Form>
