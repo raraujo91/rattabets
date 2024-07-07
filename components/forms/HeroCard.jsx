@@ -50,12 +50,12 @@ export default function HeroCard({ hero, available, id }) {
                         <CardTitle className="absolute top-4 text-4xl font-bold p-2">
                             {selectedHero.name}
                         </CardTitle>
-                        <CardTitle className="absolute top-16 text-4xl font-bold p-4 ml-2 bg-primary">
-                            <p>+{(selectedHero.power * 100) - 100}%</p>
-                        </CardTitle>
                         <Button onClick={() => storeHero(id)} variant="secondary" className="w-full self-end my-2 z-20 hover:cursor-pointer">Receber</Button>
-                        <Image priority={true} alt={selectedHero.name} src={`/${selectedHero.slug}.png`} className="absolute left-1/4 bottom-0" width="600" height="600" />
+                        <Image priority={true} alt={selectedHero.name} src={`/${selectedHero.slug}.png`} className="absolute left-0 bottom-0" width="600" height="600" />
                         <div className="bg-gradient-to-t from-primary via-primary from-0% via-5% absolute w-full h-full left-0 top-20"></div>
+                        <CardTitle className="absolute bottom-16 text-4xl font-bold p-4 ml-2 bg-orange-700">
+                            <p>+{Math.round((selectedHero.power * 100) - 100)}%</p>
+                        </CardTitle>
                     </CardContent>
                 </Card>
             </div>

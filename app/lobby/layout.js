@@ -1,10 +1,15 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { GiRat } from "react-icons/gi";
 import { Toaster } from "@/components/ui/toaster";
+import { useLoadingContext } from "@/context/loading";
 
 import Link from "next/link";
+import Loading from "@/components/misc/Loading";
 
 export default function Layout({ children  }) {
+  const { loading } = useLoadingContext()
 
   return (
     <>
@@ -21,6 +26,7 @@ export default function Layout({ children  }) {
         </nav>
         <main>{children}</main>
       </div>
+      {loading && <Loading action="Carregando..." />}
       <Toaster />
     </>
   )

@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 import { FlagIcon } from "react-flag-kit"
 import { Card } from "../ui/card"
+import { useLoadingContext } from "@/context/loading";
 
 export default function MatchCard({ fixture, user }) {
     const router = useRouter()
+    const { setLoading } = useLoadingContext()
 
     const betScore = fixture.bets.length > 0 ? fixture.bets.find(bet => bet.userId.id == user?.id) : false;
 
@@ -16,6 +18,7 @@ export default function MatchCard({ fixture, user }) {
     let hourFormatted = `${matchDate.getHours()}:${String(matchDate.getMinutes()).padStart(2, '0')}`
 
     const handleOnClick = () => {
+        setLoading(true)
         router.push(`fixtures/${fixture.championshipId}/${fixture.gameId}`)
     }
 

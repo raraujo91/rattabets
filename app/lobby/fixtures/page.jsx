@@ -1,12 +1,14 @@
+import moment from "moment"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import HeroCard from "@/components/forms/HeroCard"
 import FilterWrapper from "@/components/forms/FilterWrapper"
+import CleanLoading from "@/components/misc/LoadingCleaner"
 
 import { createClient } from "@/utils/supabase/server"
 import { redirect } from 'next/navigation'
-import moment from "moment"
 
 export const revalidate = 0
 
@@ -54,6 +56,7 @@ export default async function FixturePage({ searchParams }) {
 
     return (
         <>
+            <CleanLoading />
             <Tabs defaultValue={startAtTab ? startAtTab : championships[0].slug}>
                 <TabsList className="w-full justify-strech">
                     {championships.map(championship => {
@@ -74,8 +77,13 @@ export default async function FixturePage({ searchParams }) {
                                         if(user.championshipId == championship.slug){
                                             return (
                                                 <div key={user.userId} className="flex justify-between">
-                                                    <p>{user.profiles.nickname}</p>
-                                                    <p className="font-bold">{user.points}</p>
+                                                    <div className="flex space-x-2">
+                                                        <p>{
+                                                            (i == 0 || i == 5) ? `🏆` : (i == 4 || i == 9) ? `💸` : `💰`
+                                                        }</p>
+                                                        <p>{user.profiles.nickname}</p>
+                                                    </div>
+                                                    <div className="font-bold">{user.points}</div>
                                                 </div>
                                             )
                                         }

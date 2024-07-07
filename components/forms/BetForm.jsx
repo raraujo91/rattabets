@@ -17,6 +17,7 @@ import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import { useToast } from '../ui/use-toast'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '../ui/switch'
+import { useLoadingContext } from '@/context/loading'
 
 const formSchema = z.object({
     yellowCards: z.string(),
@@ -32,6 +33,7 @@ const formSchema = z.object({
 
 export default function BetForm({ fixture, rules, user, profile }) {
     const { bets } = fixture
+    const { loading, setLoading } = useLoadingContext()
 
     let [homeScore, setHomeScore] = useState(0)
     let [awayScore, setAwayScore] = useState(0)
@@ -40,13 +42,14 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [locked, setLocked] = useState(false)
     let [hero, setHero] = useState({})
     let [heroState, setHeroState] = useState(false)
-    let [loading, setLoading] = useState(false)
+    // let [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
         const gameTime = moment(fixture.startsAt).utcOffset("-03:00")
         const heroMetadata = profile.heros.find(hero => hero.locked == false && hero.metadata.championship == fixture.championshipId.slug || hero.locked == true && hero.fixture_id == fixture.id)
 
+        setLoading(false)
         setHero(heroMetadata || false)
         setLocked(timeNow.diff(gameTime) > 0)
 
