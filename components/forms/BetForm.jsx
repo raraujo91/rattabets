@@ -42,7 +42,6 @@ export default function BetForm({ fixture, rules, user, profile }) {
     let [locked, setLocked] = useState(false)
     let [hero, setHero] = useState({})
     let [heroState, setHeroState] = useState(false)
-    // let [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const timeNow = moment().utcOffset("-03:00")
@@ -313,7 +312,7 @@ export default function BetForm({ fixture, rules, user, profile }) {
                                 return (
                                     <div key={`${bet.id}-user-points`} className='mb-4'>
                                         <div className='font-bold flex justify-between text-2xl mx-4'>
-                                            <p>{bet.userId.nickname}</p>
+                                            <p>{bet.userId.nickname} {bet.isHeroUsed == true ? "⚡" : ""}</p>
                                             <p className='font-bold'>
                                                 {fixture.isSynced ? bet.points : "🆗"}
                                             </p>
