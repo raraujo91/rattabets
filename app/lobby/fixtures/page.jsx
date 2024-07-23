@@ -53,22 +53,23 @@ export default async function FixturePage({ searchParams }) {
     const { championships, user, points, profile } = await fetchData()
     const startAtTab = searchParams?.goto
     const newHeroAvailable = profile.heros.find(hero => hero.new == true)
+    const activeChampionships = championships.filter(championship => championship.active == true)
 
     return (
         <>
             <CleanLoading />
-            <Tabs defaultValue={startAtTab ? startAtTab : championships[0].slug}>
+            <Tabs defaultValue={startAtTab ? startAtTab : activeChampionships[0].slug}>
                 <TabsList className="w-full justify-strech">
-                    {championships.map(championship => {
+                    {activeChampionships.map(championship => {
                         return (
                             <TabsTrigger key={championship.id} value={championship.slug}>{championship.name}</TabsTrigger>
                         )
                     })}
                 </TabsList>
-                {championships.map(championship => {
+                {activeChampionships.map(championship => {
                     return (
                         <TabsContent key={championship.id} value={championship.slug}>
-                            <Card variant="ghost">
+                            <Card>
                                 <CardHeader>
                                     <CardTitle>Ranking</CardTitle>
                                 </CardHeader>

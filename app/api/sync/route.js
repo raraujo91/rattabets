@@ -11,7 +11,7 @@ export async function GET(request) {
 
     const supabase = createClient()
 
-    const { data: fixtures, error: fixturesError, status    } = await supabase.from('fixtures').select('*, championshipId(*, heros(*)), bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId)).eq('championshipId', championship)
+    const { data: fixtures, error: fixturesError, status } = await supabase.from('fixtures').select('*, championshipId(*, heros(*)), bets(*)').eq('isSynced', false).eq('isFinished', true).eq('gameId', Number(gameId)).eq('championshipId', championship)
 
     if (fixturesError) {
         return NextResponse.json({ failedAt: "fixtures", error: fixturesError }, { status })
@@ -121,7 +121,11 @@ export async function GET(request) {
                                 betCalcs.points += rule.pointsOver
                                 betCalcs.correctChoices.push(rule.keyword)
                             } else {
-                                betCalcs.points -= rule.pointsUnder / 2
+                                if(rule.keyword == "freeKickGoals") {
+                                    betCalcs.points -= rule.pointsUnder
+                                } else {
+                                    betCalcs.points -= rule.pointsUnder / 2
+                                }
                             }
                             break;
                         case "under":
@@ -129,7 +133,11 @@ export async function GET(request) {
                                 betCalcs.points += rule.pointsUnder
                                 betCalcs.correctChoices.push(rule.keyword)
                             } else {
-                                betCalcs.points -= rule.pointsOver / 2
+                                if(rule.keyword == "freeKickGoals") {
+                                    betCalcs.points -= rule.pointsOver - 4
+                                } else {
+                                    betCalcs.points -= rule.pointsOver / 2
+                                }
                             }
                             break;
                     }
@@ -151,17 +159,17 @@ export async function GET(request) {
 
             // FIX LOGIC FOR PLUS POINTS AFTER OT
 
-            // if(fixture.isPlayoff) {
-            //     if(fixture.endedIn == "OT" || fixture.endedIn == "PK") {
-            //         if(betResult == "draw" && bet.postRegulationResult == fixture.postRegulationResult) {
-            //             betCalcs.points += 5
-            //         }
+            if(fixture.isPlayoff == true) {
+                if(fixture.endedIn == "OT" || fixture.endedIn == "PK") {
+                    if(betResult == "draw" && fixture.finalResult ==  "draw" && bet.postRegulationResult == fixture.postRegulationResult) {
+                        betCalcs.points += 5
+                    }
 
-            //         if(betResult == "home" || betResult == "away" && fixture.postRegulationResult) {
-            //             betCalcs.points += 3
-            //         }
-            //     }
-            // }
+                    if(betResult == "home" || betResult == "away" && fixture.postRegulationResult == betResult) {
+                        betCalcs.points += 3
+                    }
+                }
+            }
 
             if(bet.isHeroUsed) {
                 let heroMetadata = fixture.championshipId.heros.find(hero => hero.id == bet.heroId)
