@@ -3,11 +3,12 @@
 import Image from "next/image";
 import { Card, CardContent, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function HeroCard({ hero, available, id }) {
     const [packedHero, setPackedHero] = useState(false)
     const [selectedHero, setSelectedHero] = useState(null)
+    const [heroName, setHeroName] = useState({})
 
     const { hero_id } = hero
 
@@ -21,8 +22,14 @@ export default function HeroCard({ hero, available, id }) {
     useEffect(() => {
         setSelectedHero(hero_id)
         setPackedHero(!packedHero)
+        // setHeroName({
+        //     first: selectedHero.name.split(" ")[0],
+        //     last: selectedHero.name.split(" ")[1]
+        // })
         // fetchHero()
     }, [hero_id])
+
+    const [firstName, lastName] = selectedHero?.name.split(" ")
 
     async function storeHero(userId) {
         await fetch('/api/hero', {
@@ -45,17 +52,19 @@ export default function HeroCard({ hero, available, id }) {
                 <div className="flex flex-col text-center justify-center absolute top-0 pt-14">
                     <p className="text-xl font-bold">Você recebeu um Hero!</p>
                 </div>
-                <Card className="bg-gradient-to-t from-primary from-5% absolute flex justify-center items-end overflow-hidden border-primary shadow-[0_0_30px_-10px_rgba(0,0,0,0.3)] shadow-primary">
+                <Card className="bg-gradient-to-t from-primary from-5% absolute flex justify-center items-end overflow-hidden border-primary border-[5px] shadow-[0_0_30px_-10px_rgba(0,0,0,0.3)] shadow-primary">
                     <CardContent className="relative flex items-end py-0 px-6 w-[350px] h-[480px]">
-                        <CardTitle className="absolute top-4 text-4xl font-bold p-2">
-                            {selectedHero.name}
-                        </CardTitle>
                         <Button onClick={() => storeHero(id)} variant="secondary" className="w-full self-end my-2 z-20 hover:cursor-pointer">Receber</Button>
                         <Image priority={true} alt={selectedHero.name} src={`/${selectedHero.slug}.png`} className="absolute left-0 bottom-0" width="600" height="600" />
-                        <div className="bg-gradient-to-t from-primary via-primary from-0% via-5% absolute w-full h-full left-0 top-20"></div>
-                        <CardTitle className="absolute bottom-16 text-4xl font-bold p-4 ml-2 bg-orange-700">
-                            <p>+{Math.round((selectedHero.power * 100) - 100)}%</p>
-                        </CardTitle>
+                        <div className="flex justify-between absolute bottom-16 w-10/12 bg-zinc-100 rounded-md content-center border-[2px] border-zinc-900">
+                            <div className="flex flex-col ml-2 text-zinc-950 justify-center">
+                                <span className="text-md align-text-bottom inline-block">{firstName}</span>
+                                <span className="font-extrabold text-2xl align-text-top inline-block">{lastName.toUpperCase()}</span>
+                            </div>
+                            <CardTitle className="text-2xl font-bold p-4 m-2 bg-green-900 rounded-md">
+                                <p>+{Math.round((selectedHero.power * 100) - 100)}%</p>
+                            </CardTitle>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
