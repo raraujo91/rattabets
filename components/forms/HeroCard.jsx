@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 export default function HeroCard({ hero, available, id }) {
     const [packedHero, setPackedHero] = useState(false)
     const [selectedHero, setSelectedHero] = useState(null)
-    const [heroName, setHeroName] = useState({})
 
     const { hero_id } = hero
 
@@ -22,14 +21,8 @@ export default function HeroCard({ hero, available, id }) {
     useEffect(() => {
         setSelectedHero(hero_id)
         setPackedHero(!packedHero)
-        // setHeroName({
-        //     first: selectedHero.name.split(" ")[0],
-        //     last: selectedHero.name.split(" ")[1]
-        // })
         // fetchHero()
     }, [hero_id])
-
-    const [firstName, lastName] = selectedHero?.name.split(" ")
 
     async function storeHero(userId) {
         await fetch('/api/hero', {
@@ -58,8 +51,8 @@ export default function HeroCard({ hero, available, id }) {
                         <Image priority={true} alt={selectedHero.name} src={`/${selectedHero.slug}.png`} className="absolute left-0 bottom-0" width="600" height="600" />
                         <div className="flex justify-between absolute bottom-16 w-10/12 bg-zinc-100 rounded-md content-center border-[2px] border-zinc-900">
                             <div className="flex flex-col ml-2 text-zinc-950 justify-center">
-                                <span className="text-md align-text-bottom inline-block">{firstName}</span>
-                                <span className="font-extrabold text-2xl align-text-top inline-block">{lastName.toUpperCase()}</span>
+                                <span className="text-md align-text-bottom inline-block">{selectedHero.name.split(" ")[0]}</span>
+                                <span className="font-extrabold text-2xl align-text-top inline-block">{selectedHero.name.split(" ")[1].toUpperCase()}</span>
                             </div>
                             <CardTitle className="text-2xl font-bold p-4 m-2 bg-green-900 rounded-md">
                                 <p>+{Math.round((selectedHero.power * 100) - 100)}%</p>
