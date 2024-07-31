@@ -60,7 +60,7 @@ export async function GET(request) {
                 let bullseye = rules.find(rule => rule.keyword == "bullseye")
                 betCalcs.points += bullseye.points
                 betCalcs.correctChoices.push("bullseye")
-                if (betResult.difference > 3) {
+                if (betResult.difference >= 3) {
                     betCalcs.points += 10
                     betCalcs.correctChoices.push("threeGoalsDifference")
                 }
