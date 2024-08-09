@@ -22,7 +22,7 @@ async function fetchData() {
         redirect('/auth')
     }
 
-    const { data: championships, error: championshipsError } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*, userId(*)))`).gte('fixtures.startsAt', moment().subtract(7, 'days').toISOString())
+    const { data: championships, error: championshipsError } = await supabase.from('championships').select(`*, fixtures(*, homeTeam(*), awayTeam(*), bets(*, userId(*)))`).eq('active', true).gte('fixtures.startsAt', moment().subtract(7, 'days').toISOString())
 
     if (championshipsError) {
         throw new Error(JSON.stringify(championshipsError, null, 2))
@@ -55,6 +55,9 @@ export default async function FixturePage({ searchParams }) {
     const newHeroAvailable = profile.heros.find(hero => hero.new == true)
     const activeChampionships = championships.filter(championship => championship.active == true)
 
+    // lazy fix :D
+    const olympicsRanking = points.filter(point => point.championshipId == "m-olympics-2024");
+
     return (
         <>
             <CleanLoading />
@@ -74,7 +77,7 @@ export default async function FixturePage({ searchParams }) {
                                     <CardTitle>Ranking</CardTitle>
                                 </CardHeader>
                                 <CardContent> 
-                                    {points.map((user, i) => {
+                                    {olympicsRanking.map((user, i) => {
                                         if(user.championshipId == championship.slug){
                                             return (
                                                 <div key={user.userId} className="flex justify-between">
