@@ -50,6 +50,10 @@ async function fetchData() {
 }
 
 export default async function FixturePage({ searchParams }) {
+    if(process.env.CURRENT_SITE_STATUS == "idle") {
+        redirect('/hof')
+      }
+
     const { championships, user, points, profile } = await fetchData()
     const startAtTab = searchParams?.goto
     const newHeroAvailable = profile.heros.find(hero => hero.new == true)
