@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 
 export default async function PrivatePage() {
-  if(process.env.CURRENT_SITE_STATUS == "idle") {
+  if(process.env.NEXT_PUBLIC_CURRENT_SITE_STATUS == "idle") {
     redirect('/hof')
   }
 

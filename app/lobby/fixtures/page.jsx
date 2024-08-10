@@ -50,7 +50,7 @@ async function fetchData() {
 }
 
 export default async function FixturePage({ searchParams }) {
-    if(process.env.CURRENT_SITE_STATUS == "idle") {
+    if(process.env.NEXT_PUBLIC_CURRENT_SITE_STATUS == "idle") {
         redirect('/hof')
       }
 
